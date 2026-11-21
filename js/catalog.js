@@ -1,22 +1,19 @@
-console.log('Файл main.js подключён');
-console.log(products);
-console.table(products);
+const productsContainer = document.querySelector('[data-products-container]');
+const searchInput = document.querySelector('#catalog-search');
+const categoryFilter = document.querySelector('#category-filter');
+const sortSelect = document.querySelector('#sort-select');
+const catalogCount = document.querySelector('.catalog-count');
+const catalogEmpty = document.querySelector('.catalog-empty');
 
-function getProductTitles(products) {
-  return products.map((product) => product.title);
+if (!productsContainer) {
+  console.warn('Контейнер товаров не найден. Проверьте data-products-container.');
 }
 
-const productTitles = getProductTitles(products);
-
-console.log(productTitles);
-
-function getAvailableProducts(products) {
-  return products.filter((product) => product.isAvailable);
-}
-
-const availableProducts = getAvailableProducts(products);
-
-console.table(availableProducts);
+const catalogState = {
+  query: '',
+  category: 'all',
+  sort: 'default'
+};
 
 function searchProducts(products, query) {
   const normalizedQuery = query.trim().toLowerCase();
@@ -30,10 +27,6 @@ function searchProducts(products, query) {
   });
 }
 
-const searchResult = searchProducts(products, 'кофе');
-
-console.table(searchResult);
-
 function filterProductsByCategory(products, category) {
   if (category === 'all') {
     return products;
@@ -44,94 +37,141 @@ function filterProductsByCategory(products, category) {
   });
 }
 
-const kitchenProducts = filterProductsByCategory(products, 'kitchen');
-
-console.table(kitchenProducts);
-
-function sortProductsByPrice(products, direction = 'asc') {
+function sortProducts(products, sortType) {
   const productsCopy = [...products];
 
-  if (direction === 'desc') {
+  if (sortType === 'price-asc') {
+    return productsCopy.sort((a, b) => a.price - b.price);
+  }
+
+  if (sortType === 'price-desc') {
     return productsCopy.sort((a, b) => b.price - a.price);
   }
 
-  return productsCopy.sort((a, b) => a.price - b.price);
-}
-
-const productsSortedByPrice = sortProductsByPrice(products, 'asc');
-
-console.table(productsSortedByPrice);
-
-function findProductById(products, id) {
-  return products.find((product) => product.id === id);
-}
-
-const selectedProduct = findProductById(products, 3);
-
-if (selectedProduct) {
-  console.log(`Найден товар: ${selectedProduct.title}`);
-} else {
-  console.log('Товар не найден');
-}
-
-function calculateTotalPrice(products) {
-  return products.reduce((sum, product) => {
-    return sum + product.price;
-  }, 0);
-}
-
-const totalPrice = calculateTotalPrice(products);
-
-console.log(totalPrice);
-
-
-function countAvailableProducts(products) {
-  return products.filter((product) => product.isAvailable).length;
-}
-
-const availableCount = countAvailableProducts(products);
-
-console.log(availableCount);
-
-function calculateAveragePrice(products) {
-  if (products.length === 0) {
-    return 0;
+  if (sortType === 'title-asc') {
+    return productsCopy.sort((a, b) => a.title.localeCompare(b.title));
   }
 
-  const totalPrice = calculateTotalPrice(products);
-  return Math.round(totalPrice / products.length);
+  return productsCopy;
 }
 
-const averagePrice = calculateAveragePrice(products);
-
-console.log(averagePrice);
-
-function getPreparedProducts(products, query, category, sortDirection) {
+function getPreparedProducts(products, state) {
   let result = [...products];
 
-  result = searchProducts(result, query);
-  result = filterProductsByCategory(result, category);
-  result = sortProductsByPrice(result, sortDirection);
+  result = searchProducts(result, state.query);
+  result = filterProductsByCategory(result, state.category);
+  result = sortProducts(result, state.sort);
 
   return result;
 }
 
-const preparedProducts = getPreparedProducts(products, 'ко', 'kitchen', 'asc');
-
-console.table(preparedProducts);
-
-const messageElement = document.querySelector('.js-message');
-const productOutputElement = document.querySelector('.product-output');
-
-if (messageElement) {
-  messageElement.textContent = 'Массив товаров и функции обработки данных подключены.';
+function formatPrice(price) {
+  return `${price.toLocaleString('ru-RU')} руб.`;
 }
 
-if (productOutputElement) {
-  productOutputElement.textContent = [
-    `Всего товаров: ${products.length}`,
-    `Товаров в наличии: ${countAvailableProducts(products)}`,
-    `Средняя цена: ${calculateAveragePrice(products)} руб.`,
-    `Результатов поиска "ко": ${searchProducts(products, 'ко').length}`
-  ].join('\n');
+function createProductCard(product) {
+  const card = document.createElement('article');
+  card.classList.add('product-card');
+
+  const image = document.createElement('img');
+  image.classList.add('product-card__image');
+  image.src = product.image;
+  image.alt = product.title;
+
+  const title = document.createElement('h3');
+  title.classList.add('product-card__title');
+  title.textContent = product.title;
+
+  const description = document.createElement('p');
+  description.classList.add('product-card__description');
+  description.textContent = product.description;
+
+  const price = document.createElement('p');
+  price.classList.add('product-card__price');
+  price.textContent = formatPrice(product.price);
+
+  const status = document.createElement('p');
+  status.classList.add('product-card__status');
+  status.textContent = product.isAvailable ? 'В наличии' : 'Нет в наличии';
+
+  const button = document.createElement('button');
+  button.classList.add('product-card__button');
+  button.type = 'button';
+  button.textContent = 'В корзину';
+  button.dataset.action = 'add-to-cart';
+  button.dataset.productId = String(product.id);
+
+  if (!product.isAvailable) {
+    button.disabled = true;
+    button.textContent = 'Недоступно';
+  }
+
+  card.append(image, title, description, price, status, button);
+
+  return card;
+}
+
+function renderProducts(productsToRender) {
+  productsContainer.textContent = '';
+
+  if (catalogCount) {
+    catalogCount.textContent = `Найдено товаров: ${productsToRender.length}`;
+  }
+
+  if (catalogEmpty) {
+    catalogEmpty.hidden = productsToRender.length > 0;
+  }
+
+  productsToRender.forEach((product) => {
+    const card = createProductCard(product);
+    productsContainer.append(card);
+  });
+}
+
+function updateCatalog() {
+  const preparedProducts = getPreparedProducts(products, catalogState);
+  renderProducts(preparedProducts);
+}
+
+if (searchInput) {
+  searchInput.addEventListener('input', (event) => {
+    catalogState.query = event.target.value;
+    updateCatalog();
+  });
+}
+
+if (categoryFilter) {
+  categoryFilter.addEventListener('change', (event) => {
+    catalogState.category = event.target.value;
+    updateCatalog();
+  });
+}
+
+if (sortSelect) {
+  sortSelect.addEventListener('change', (event) => {
+    catalogState.sort = event.target.value;
+    updateCatalog();
+  });
+}
+
+if (productsContainer) {
+  updateCatalog();
+
+  productsContainer.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-action="add-to-cart"]');
+
+    if (!button) {
+      return;
+    }
+
+    const productId = Number(button.dataset.productId);
+    const selectedProduct = products.find((product) => product.id === productId);
+
+    if (!selectedProduct) {
+      console.warn('Товар не найден:', productId);
+      return;
+    }
+
+    console.log(`Товар добавлен в корзину: ${selectedProduct.title}`);
+  });
 }
