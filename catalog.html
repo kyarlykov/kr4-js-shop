@@ -11,9 +11,13 @@
   <meta property="og:title" content="Каталог товаров — Учебный интернет-магазин">
   <meta property="og:description" content="Учебный frontend-проект интернет-магазина.">
   <meta property="og:image" content="https://kyarlykov.github.io/kr1-html-css-shop/images/preview.jpg">
+  <!-- Подключение скриптов -->
+  <script src="js/data.js" defer></script>
+  <script src="js/catalog.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к основному содержимому</a>
+  
   <header class="site-header">
     <div class="site-header__inner">
       <a class="site-header__logo" href="index.html">ShopProject</a>
@@ -52,127 +56,59 @@
     <section class="section">
       <h1 class="section__title">Каталог товаров</h1>
       <p>
-        В нашем каталоге представлены современные решения для хранения вещей. 
-        Выберите готовый шкаф или закажите индивидуальный проект по вашим размерам.
+        В нашем каталоге представлены современные решения для вашего дома. 
+        Выберите готовый товар или воспользуйтесь удобными фильтрами для поиска.
       </p>
     </section>
 
-    <section class="catalog-layout">
-      <aside class="catalog-filters">
-        <h2 class="catalog-filters__title">Фильтры</h2>
+    <!-- БЛОК УПРАВЛЕНИЯ КАТАЛОГОМ (Этап 4) -->
+    <section class="catalog-controls" aria-label="Управление каталогом">
+      <div class="catalog-controls__group">
+        <label for="catalog-search">Поиск товара</label>
+        <input
+          id="catalog-search"
+          class="catalog-controls__input"
+          type="search"
+          placeholder="Введите название товара"
+          autocomplete="off"
+        >
+      </div>
 
-        <form class="catalog-filters__form" action="#" method="get">
-          <fieldset class="catalog-filters__group">
-            <legend class="catalog-filters__legend">Категория</legend>
+      <div class="catalog-controls__group">
+        <label for="category-filter">Категория</label>
+        <select id="category-filter" class="catalog-controls__select">
+          <option value="all">Все категории</option>
+          <option value="kitchen">Кухня</option>
+          <option value="home">Дом</option>
+          <option value="electronics">Электроника</option>
+        </select>
+      </div>
 
-            <label class="catalog-filters__label">
-              <input class="catalog-filters__checkbox" type="checkbox" name="category" value="all">
-              Все товары
-            </label>
+      <div class="catalog-controls__group">
+        <label for="sort-select">Сортировка</label>
+        <select id="sort-select" class="catalog-controls__select">
+          <option value="default">По умолчанию</option>
+          <option value="price-asc">Сначала дешевле</option>
+          <option value="price-desc">Сначала дороже</option>
+          <option value="title-asc">По названию А-Я</option>
+        </select>
+      </div>
+    </section>
 
-            <label class="catalog-filters__label">
-              <input class="catalog-filters__checkbox" type="checkbox" name="category" value="popular">
-              Популярные
-            </label>
+    <!-- Информационные сообщения -->
+    <p class="catalog-count" aria-live="polite"></p>
+    <p class="catalog-empty" hidden>По выбранным условиям товары не найдены.</p>
 
-            <label class="catalog-filters__label">
-              <input class="catalog-filters__checkbox" type="checkbox" name="category" value="new">
-              Новинки
-            </label>
-          </fieldset>
+    <!-- КОНТЕЙНЕР ДЛЯ ДИНАМИЧЕСКОГО ВЫВОДА ТОВАРОВ -->
+    <div class="products-grid" data-products-container></div>
 
-          <fieldset class="catalog-filters__group">
-            <legend class="catalog-filters__legend">Цена</legend>
-
-            <label class="catalog-filters__label" for="price-from">От</label>
-            <input class="catalog-filters__input" id="price-from" name="price-from" type="number" min="0" placeholder="0">
-
-            <label class="catalog-filters__label" for="price-to">До</label>
-            <input class="catalog-filters__input" id="price-to" name="price-to" type="number" min="0" placeholder="5000">
-          </fieldset>
-
-          <button class="button button--primary" type="submit">Применить</button>
-        </form>
-      </aside>
-
-      <section class="catalog-layout__products">
-        <h2 class="section__title">Список товаров</h2>
-        <div class="products-grid">
-          <article class="product-card">
-            <span class="product-card__badge">Новинка</span>
-            <img
-              class="product-card__image"
-              src="images/wardrobe-verona.jpg"
-              alt="Шкаф-купе «Верона»"
-              loading="lazy"
-            >
-            <h3 class="product-card__title">Шкаф-купе «Верона»</h3>
-            <p class="product-card__description">Двухдверный шкаф-купе с зеркальной вставкой и двумя ящиками.</p>
-            <p class="product-card__price">Цена: 24 900 руб.</p>
-            <a class="button button--primary product-card__button" href="product.html?id=1">Подробнее</a>
-          </article>
-
-          <article class="product-card">
-            <img
-              class="product-card__image"
-              src="images/wardrobe-classic.jpg"
-              alt="Шкаф распашной «Классик»"
-              loading="lazy"
-            >
-            <h3 class="product-card__title">Шкаф распашной «Классик»</h3>
-            <p class="product-card__description">Трёхдверный распашной шкаф с антресолью и штангой для одежды.</p>
-            <p class="product-card__price">Цена: 18 500 руб.</p>
-            <a class="button button--primary product-card__button" href="product.html?id=2">Подробнее</a>
-          </article>
-
-          <article class="product-card">
-            <img
-              class="product-card__image"
-              src="images/wardrobe-modern.jpg"
-              alt="Шкаф-купе «Модерн»"
-              loading="lazy"
-            >
-            <h3 class="product-card__title">Шкаф-купе «Модерн»</h3>
-            <p class="product-card__description">Трёхдверный шкаф-купе с подсветкой и зеркальной фасадной панелью.</p>
-            <p class="product-card__price">Цена: 32 000 руб.</p>
-            <a class="button button--primary product-card__button" href="product.html?id=3">Подробнее</a>
-          </article>
-
-          <article class="product-card">
-            <span class="product-card__badge">Новинка</span>
-            <img
-              class="product-card__image"
-              src="images/wardrobe-compact.jpg"
-              alt="Шкаф-пенал «Компакт»"
-              loading="lazy"
-            >
-            <h3 class="product-card__title">Шкаф-пенал «Компакт»</h3>
-            <p class="product-card__description">Узкий шкаф-пенал для прихожей или небольшой комнаты.</p>
-            <p class="product-card__price">Цена: 15 900 руб.</p>
-            <a class="button button--primary product-card__button" href="product.html?id=4">Подробнее</a>
-          </article>
-
-          <article class="product-card">
-            <img
-              class="product-card__image"
-              src="images/wardrobe-lux.jpg"
-              alt="Гардеробная система «Люкс»"
-              loading="lazy"
-            >
-            <h3 class="product-card__title">Гардеробная система «Люкс»</h3>
-            <p class="product-card__description">Модульная гардеробная система с открытыми секциями и подсветкой.</p>
-            <p class="product-card__price">Цена: 45 000 руб.</p>
-            <a class="button button--primary product-card__button" href="product.html?id=5">Подробнее</a>
-          </article>
-        </div>
-        </section>
-      </section>
   </main>
 
   <footer class="site-footer">
     <p>&copy; 2026 Учебный проект. Все права защищены.</p>
     <p>Дисциплина: Фронтенд и бэкенд разработка</p>
   </footer>
+  
   <a class="to-top" href="#" aria-label="Наверх">↑</a>
 </body>
 </html>
