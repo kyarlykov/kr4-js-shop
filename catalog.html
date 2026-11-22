@@ -3,24 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Каталог товаров учебного интернет-магазина.">
-  <title>Каталог товаров — Учебный интернет-магазин</title>
+  <meta name="description" content="Каталог товаров магазина мебели WoodSpace.">
+  <title>Каталог товаров — WoodSpace</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/responsive.css">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Каталог товаров — Учебный интернет-магазин">
-  <meta property="og:description" content="Учебный frontend-проект интернет-магазина.">
-  <meta property="og:image" content="https://kyarlykov.github.io/kr1-html-css-shop/images/preview.jpg">
-  <!-- Подключение скриптов -->
   <script src="js/data.js" defer></script>
   <script src="js/catalog.js" defer></script>
+  <script src="js/main.js" defer></script>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Каталог товаров — WoodSpace">
+  <meta property="og:description" content="Современные шкафы-купе и гардеробные системы.">
+  <meta property="og:image" content="https://kyarlykov.github.io/kr1-html-css-shop/images/preview.jpg">
 </head>
 <body>
   <a class="skip-link" href="#main">Перейти к основному содержимому</a>
-  
   <header class="site-header">
     <div class="site-header__inner">
-      <a class="site-header__logo" href="index.html">ShopProject</a>
+      <a class="site-header__logo" href="index.html">WoodSpace</a>
 
       <nav class="site-nav" aria-label="Основная навигация">
         <ul class="site-nav__list">
@@ -56,59 +55,116 @@
     <section class="section">
       <h1 class="section__title">Каталог товаров</h1>
       <p>
-        В нашем каталоге представлены современные решения для вашего дома. 
-        Выберите готовый товар или воспользуйтесь удобными фильтрами для поиска.
+        В нашем каталоге представлены современные решения для хранения вещей.
+        Выберите готовый шкаф или закажите индивидуальный проект по вашим размерам.
       </p>
     </section>
 
-    <!-- БЛОК УПРАВЛЕНИЯ КАТАЛОГОМ (Этап 4) -->
-    <section class="catalog-controls" aria-label="Управление каталогом">
-      <div class="catalog-controls__group">
-        <label for="catalog-search">Поиск товара</label>
-        <input
-          id="catalog-search"
-          class="catalog-controls__input"
-          type="search"
-          placeholder="Введите название товара"
-          autocomplete="off"
-        >
-      </div>
+    <section class="catalog-layout">
+      <aside class="catalog-filters">
+        <h2 class="catalog-filters__title">Фильтры</h2>
 
-      <div class="catalog-controls__group">
-        <label for="category-filter">Категория</label>
-        <select id="category-filter" class="catalog-controls__select">
-          <option value="all">Все категории</option>
-          <option value="kitchen">Кухня</option>
-          <option value="home">Дом</option>
-          <option value="electronics">Электроника</option>
-        </select>
-      </div>
+        <form class="catalog-filters__form" id="catalog-filters-form" action="#" method="get">
+          <fieldset class="catalog-filters__group">
+            <legend class="catalog-filters__legend">Поиск и сортировка</legend>
 
-      <div class="catalog-controls__group">
-        <label for="sort-select">Сортировка</label>
-        <select id="sort-select" class="catalog-controls__select">
-          <option value="default">По умолчанию</option>
-          <option value="price-asc">Сначала дешевле</option>
-          <option value="price-desc">Сначала дороже</option>
-          <option value="title-asc">По названию А-Я</option>
-        </select>
-      </div>
+            <label class="catalog-filters__label" for="catalog-search">Название товара</label>
+            <input
+              class="catalog-filters__input"
+              id="catalog-search"
+              name="search"
+              type="search"
+              placeholder="Например, Верона"
+            >
+
+            <label class="catalog-filters__label" for="sort-select" style="margin-top: 8px;">Сортировка</label>
+            <select class="order-form__select" id="sort-select" name="sort">
+              <option value="default">По умолчанию</option>
+              <option value="price-asc">Сначала дешевле</option>
+              <option value="price-desc">Сначала дороже</option>
+              <option value="title-asc">По названию (А–Я)</option>
+            </select>
+          </fieldset>
+
+          <fieldset class="catalog-filters__group">
+            <legend class="catalog-filters__legend">Категория</legend>
+
+            <label class="catalog-filters__label">
+              <input class="catalog-filters__checkbox" type="checkbox" name="category" value="all" checked>
+              Все товары
+            </label>
+
+            <label class="catalog-filters__label">
+              <input class="catalog-filters__checkbox" type="checkbox" name="category" value="popular">
+              Популярные
+            </label>
+
+            <label class="catalog-filters__label">
+              <input class="catalog-filters__checkbox" type="checkbox" name="category" value="new">
+              Новинки
+            </label>
+
+            <label class="catalog-filters__label">
+              <input class="catalog-filters__checkbox" id="only-favorites" type="checkbox" name="favorites">
+              Только избранное
+            </label>
+          </fieldset>
+
+          <fieldset class="catalog-filters__group">
+            <legend class="catalog-filters__legend">Цена</legend>
+
+            <label class="catalog-filters__label" for="price-from">От</label>
+            <input class="catalog-filters__input" id="price-from" name="price-from" type="number" min="0" placeholder="15000">
+
+            <label class="catalog-filters__label" for="price-to" style="margin-top: 8px;">До</label>
+            <input class="catalog-filters__input" id="price-to" name="price-to" type="number" min="0" placeholder="50000">
+          </fieldset>
+
+          <button class="button button--primary" type="submit">Применить</button>
+          <button class="button button--secondary" type="button" id="reset-filters">Сбросить</button>
+        </form>
+
+        <div class="catalog-filters__group" id="sidebar-cart" style="margin-top: 24px;">
+          <h3 class="catalog-filters__legend" style="margin-top: 0;">Корзина</h3>
+          <p data-sidebar-cart-empty>Корзина пуста. Выберите товары из каталога.</p>
+          <div data-sidebar-cart-list></div>
+
+          <div data-sidebar-cart-summary hidden style="margin-top: 12px;">
+            <form id="promo-form" style="display: grid; gap: 8px; margin-bottom: 12px;">
+              <label class="catalog-filters__label" for="promo-input" style="margin-bottom: 0;">Промокод (WOOD15)</label>
+              <input class="catalog-filters__input" id="promo-input" type="text" placeholder="WOOD15">
+              <button class="button button--secondary" type="submit">Применить промокод</button>
+            </form>
+            <p id="promo-message" aria-live="polite" style="font-size: 14px;"></p>
+
+            <p style="margin: 4px 0;">Товаров: <strong data-sidebar-cart-count>0</strong></p>
+            <p style="margin: 4px 0;">Скидка: <strong data-sidebar-cart-discount>0 руб.</strong></p>
+            <p style="margin: 8px 0;">Итого: <strong data-sidebar-cart-total>0 руб.</strong></p>
+
+            <a class="button button--primary" href="order.html" style="width: 100%; text-align: center;">Оформить заказ</a>
+          </div>
+        </div>
+      </aside>
+
+      <section class="catalog-layout__products">
+        <h2 class="section__title">Список товаров</h2>
+        <p class="catalog-count" aria-live="polite"></p>
+        <p class="success-message catalog-notice" id="catalog-notice" hidden aria-live="polite"></p>
+
+        <div class="products-grid" data-products-container></div>
+
+        <div class="info-note catalog-empty" hidden>
+          <h3 class="info-note__title">Товары не найдены</h3>
+          <p>По выбранным фильтрам ничего не найдено. Попробуйте изменить диапазон цен или сбросить фильтры.</p>
+        </div>
+      </section>
     </section>
-
-    <!-- Информационные сообщения -->
-    <p class="catalog-count" aria-live="polite"></p>
-    <p class="catalog-empty" hidden>По выбранным условиям товары не найдены.</p>
-
-    <!-- КОНТЕЙНЕР ДЛЯ ДИНАМИЧЕСКОГО ВЫВОДА ТОВАРОВ -->
-    <div class="products-grid" data-products-container></div>
-
   </main>
 
   <footer class="site-footer">
-    <p>&copy; 2026 Учебный проект. Все права защищены.</p>
+    <p>&copy; 2026 WoodSpace. Все права защищены.</p>
     <p>Дисциплина: Фронтенд и бэкенд разработка</p>
   </footer>
-  
   <a class="to-top" href="#" aria-label="Наверх">↑</a>
 </body>
 </html>
